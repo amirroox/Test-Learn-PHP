@@ -7,16 +7,14 @@ class Users {
 
     public function __call(string $name, array $arguments)
     {
-        var_dump($name);
-        var_dump($arguments);
+        $property = substr($name , 3);
+        if(property_exists($this , $property)) {
+            if (!empty($arguments)) $this->$property = $arguments[0];
+            else return $this->$property ;
+        }
+        else {
+            echo("Property Not Excited ! ");
+        }
+        return false;
     }
-//    public function getFirstName(): string
-//    {
-//        return $this->FirstName;
-//    }
-
-//    public function setFirstName(string $FirstName): void
-//    {
-//        $this->FirstName = $FirstName;
-//    }
 }
