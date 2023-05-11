@@ -11,7 +11,7 @@
         beStrictAboutCoverageMetadata="true">
   <testsuites>
     <testsuite name="default">
-      <directory>src/TDD-Test/tests</directory>
+      <directory>tests</directory>
     </testsuite>
   </testsuites>
 </phpunit>
