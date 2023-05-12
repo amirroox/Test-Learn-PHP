@@ -25,7 +25,7 @@ class ConfigTest extends TestCase {
         $check = [
             'driver' => 'mysql',
             'host' => 'localhost',
-            'Data' => 'ORM-Test-Project',
+            'dbname' => 'ORM-Test-Project',
             'user' => 'root',
             'password' => ''
         ];
