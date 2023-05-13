@@ -2,9 +2,9 @@
 namespace App\Helpers;
 
 use App\Exceptions\NotLoadConfigDataBaseException;
-use function PHPUnit\Framework\isNull;
 
 class Config {
+
     /**
      * @throws NotLoadConfigDataBaseException
      */
