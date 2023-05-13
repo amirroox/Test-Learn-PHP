@@ -30,7 +30,23 @@ class QueryBuilderTest extends TestCase {
         $this->assertEquals(1 , $result);
     }
 
+    /**
+     * @throws NotLoadConfigDataBaseException
+     * @throws PDONotConnectionException
+     */
+    public function testItCanUpdateToTable(){
+        $pdoConnection = new PDOConnection($this->getConnection());
+        $QueryBuilder = new PDOQueryBuilder($pdoConnection->connect());
+        $data = [
+            "name" => "Amir Roox",
+            "age" => "20",
+        ];
+        $result = $QueryBuilder->table('Users')->where("id",1)->update($data);
+        $this->assertIsInt($result);
+        $this->assertEquals(1 , $result);
 
+
+    }
     /**
      * @throws NotLoadConfigDataBaseException
      */
