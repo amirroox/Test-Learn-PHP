@@ -15,7 +15,7 @@ class PDOConnectionTest extends TestCase {
     /**
      * @throws NotLoadConfigDataBaseException
      */
-    public function testPDOConnectionImplementsDataBasesConnectionInterface()
+    public function testPdoConnectionImplementsDataBasesConnectionInterface()
     {
         $config = $this->GetConnection();
         $Connection = new PDOConnection($config);

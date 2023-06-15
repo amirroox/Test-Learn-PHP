@@ -41,25 +41,42 @@ class QueryBuilderTest extends TestCase {
             "name" => $FakerInfo->info['Name'],
             "age" => $FakerInfo->info['Age'],
         ];
-        $result = $this->QueryBuilder->table('users')->where("age = 18")->update($data);
+        $result = $this->QueryBuilder->table('users')->where(["age" => "18"])->update($data);
         $this->assertIsInt($result);
         $this->assertEquals(1 , $result);
     }
 
     public function testItCanDeleteToTable(){
         $this->insertToTable(["age"=> "18"]);
-        $result = $this->QueryBuilder ->table('users')->where("age = 18")->delete();
+        $result = $this->QueryBuilder ->table('users')->where(["age" => "18"])->delete();
         $this->assertIsInt($result);
         $this->assertEquals(1 , $result);
     }
 
-    public function sstestItCanReadToTable() {
-        $this->multiInsert(10);
-//        $result =
+    public function testItCanReadToTable() {
+        $count = 10 ;
+        $this->multiInsert($count);
+        $result = $this->QueryBuilder->table('users')->select($count);
+        $this->assertIsArray($result);
+        $this->assertCount($count,$result);
+    }
+
+    public function testItCanReadToTableWithCustomField() {
+        $this->insertToTable(["name"=>"amir" , "age"=>"21"]);
+        $data = "name,link" ;
+        $result = $this->QueryBuilder->table('users')->where(["name"=>"amir" , "age"=>"21"])->select(1 , $data);
+        $check = implode(',' , array_keys($result[0]));
+        $this->assertEquals($data,$check);
+    }
+
+    /*
+     * @after
+     */
+    public function exit_testTRUNCATE() {
+        $this->QueryBuilder->TRUNCATE();
     }
     public function tearDown(): void
     {
-//        $this->QueryBuilder->TRUNCATE();
         $this->QueryBuilder->rollBack();
         parent::tearDown();
     }

@@ -13,7 +13,7 @@ class ConfigTest extends TestCase {
     }
     function testErrorConfigException() { # 2 - Test Error Handling
         $this->expectException(NotLoadConfigDataBaseException::class);
-        $config = Config::ReadFileConfigDataBase("Data");
+        $config = Config::ReadFileConfigDataBase("Fake");
     }
 
     /**

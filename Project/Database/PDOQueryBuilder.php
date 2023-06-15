@@ -6,7 +6,7 @@ use PDO;
 class PDOQueryBuilder {
     protected string $table ;
     protected PDO $connection;
-    protected string $where ;
+    protected string $where = '1' ;
     public function __construct($connection)
     {
         $this->connection = $connection->Getconnection() ;
@@ -16,9 +16,17 @@ class PDOQueryBuilder {
         $this->table = $table;
         return $this;
     }
-    public function where(string $where): static
+    public function where(array $where): static
     {
-        $this->where = "$where";
+        $field = "" ;
+        $element = 0 ;
+        $endElement = count($where);
+        foreach ($where as $key => $value) {
+            $element++;
+            $field .= "$key = '$value' " ;
+            if ($element != $endElement) $field .= " AND ";
+        }
+        $this->where = "$field";
         return $this;
     }
     public function create(array $data) :int
@@ -49,6 +57,14 @@ class PDOQueryBuilder {
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         return $stmt->rowCount();
+    }
+
+    public function select($limit = 10 , $data = "*"): false|array
+    {
+        $sql = "SELECT $data FROM $this->table WHERE $this->where LIMIT $limit" ;
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function TRUNCATE() :void {
