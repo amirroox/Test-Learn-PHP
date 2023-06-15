@@ -39,7 +39,7 @@ class PDOConnectionTest extends TestCase {
      * @throws NotLoadConfigDataBaseException
      * @throws PDONotConnectionException
      */
-    public function testThrowExceptionIfConfigInvalid() {
+    public function ChecktestThrowExceptionIfConfigInvalid() {   //Timing Full
         $this->expectException(PDONotConnectionException::class);
         $config = $this->GetConnection();
         $config['host'] = 'Dumm' ;

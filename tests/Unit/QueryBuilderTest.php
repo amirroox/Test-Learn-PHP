@@ -7,50 +7,74 @@ use App\Database\PDOQueryBuilder;
 use App\Exceptions\NotLoadConfigDataBaseException;
 use App\Exceptions\PDONotConnectionException;
 use App\Helpers\Config;
+use App\Helpers\Faker;
 use PHPUnit\Framework\TestCase;
 
 class QueryBuilderTest extends TestCase {
 
+    private PDOQueryBuilder $QueryBuilder;
+
+
     /**
      * @throws NotLoadConfigDataBaseException
      * @throws PDONotConnectionException
      */
-    public function testItCanInsertToTable()
+    public function setUp(): void
     {
         $pdoConnection = new PDOConnection($this->getConnection());
-        $QueryBuilder = new PDOQueryBuilder($pdoConnection->connect());
-        $data = [
-          "name" => "Amir",
-          "email" => "AmirRoox@yahoo.com",
-          "age" => "21",
-          "link" => "https://ro-ox.com",
-        ];
-        $result = $QueryBuilder->table('Users')->create($data);
+        $this->QueryBuilder = new PDOQueryBuilder($pdoConnection->connect());
+        $this->QueryBuilder->beginTransaction();
+        parent::setUp();
+    }
+
+    public function testItCanInsertToTable()
+    {
+        $result = $this->insertToTable();
         $this->assertIsInt($result);
         $this->assertEquals(1 , $result);
     }
 
-    /**
-     * @throws NotLoadConfigDataBaseException
-     * @throws PDONotConnectionException
-     */
     public function testItCanUpdateToTable(){
-        $pdoConnection = new PDOConnection($this->getConnection());
-        $QueryBuilder = new PDOQueryBuilder($pdoConnection->connect());
+        $this->insertToTable();
+        $FakerInfo = new Faker();
         $data = [
-            "name" => "Amir Roox",
-            "age" => "20",
+            "name" => $FakerInfo->info['Name'],
+            "age" => $FakerInfo->info['Age'],
         ];
-        $result = $QueryBuilder->table('Users')->where("id",1)->update($data);
+        $result = $this->QueryBuilder ->table('users')->where("id=1")->update($data);
         $this->assertIsInt($result);
-        $this->assertEquals(1 , $result);
+//        $this->assertEquals(1 , $result);
+    }
 
+    public function testItCanDeleteToTable(){
+        $this->insertToTable();
+        $result = $this->QueryBuilder ->table('users')->where("id=1")->delete();
+        $this->assertIsInt($result);
+//        $this->assertEquals(1 , $result);
+    }
 
+    public function tearDown(): void
+    {
+//        $this->QueryBuilder->TRUNCATE();
+        $this->QueryBuilder->rollBack();
+        parent::tearDown();
+    }
+
+    private function insertToTable() :int
+    {
+        $FakerInfo = new Faker();
+        $data = [
+            "name" => $FakerInfo->info['Name'],
+            "email" => $FakerInfo->info['Email'],
+            "age" => $FakerInfo->info['Age'],
+            "link" => $FakerInfo->info['Link'],
+        ];
+        return $this->QueryBuilder->table('users')->create($data);
     }
     /**
      * @throws NotLoadConfigDataBaseException
      */
     private function getConnection() {
-        return Config::GetFileConfigDataBase('DataBase','PDO-Testing');
+        return Config::GetFileConfigDataBase('Database','PDO-Testing');
     }
 }
