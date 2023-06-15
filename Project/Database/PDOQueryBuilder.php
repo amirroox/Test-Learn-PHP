@@ -34,7 +34,7 @@ class PDOQueryBuilder {
     public function update(array $data) :int
     {
         $setter = [];
-        foreach ($data as $key => $value) $setter[] = $key . "=" . "?" ;
+        foreach ($data as $key => $value) $setter[] = $key . " = " . "?" ;
         $setter = implode(',' , $setter);
 
         $sql = "UPDATE $this->table SET $setter WHERE $this->where";
