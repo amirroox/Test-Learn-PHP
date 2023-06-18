@@ -56,17 +56,44 @@ class QueryBuilderTest extends TestCase {
     public function testItCanReadToTable() {
         $count = 10 ;
         $this->multiInsert($count);
-        $result = $this->QueryBuilder->table('users')->select($count);
+        $result = $this->QueryBuilder->table('users')->select();
+        $this->insertToTable(["name"=> "amirroox1381"]);
+        $result2 = $this->QueryBuilder->table('users')->where(["name"=> "amirroox1381"])->select();
         $this->assertIsArray($result);
+        $this->assertIsArray($result2);
         $this->assertCount($count,$result);
+        $this->assertCount(1,$result2);
     }
 
     public function testItCanReadToTableWithCustomField() {
         $this->insertToTable(["name"=>"amir" , "age"=>"21"]);
         $data = "name,link" ;
-        $result = $this->QueryBuilder->table('users')->where(["name"=>"amir" , "age"=>"21"])->select(1 , $data);
+        $result = $this->QueryBuilder->table('users')->where(["name"=>"amir" , "age"=>"21"])->select($data);
         $check = implode(',' , array_keys($result[0]));
         $this->assertEquals($data,$check);
+    }
+
+    public function testLimitForReadInTable() {
+        $count = 10 ;
+        $this->multiInsert($count);
+        $result = $this->QueryBuilder->table('users')->limit('2')->select();
+
+        $this->insertToTable(["name"=> "amirroox1381"]);
+        $result2 = $this->QueryBuilder->table('users')->where(["name"=> "amirroox1381"])->limit('1')->select();
+
+        $this->assertCount(2, $result);
+        $this->assertCount(1, $result2);
+    }
+
+    public function testOrderByReadInTable() {
+        $count = 10 ;
+        $this->multiInsert($count);
+        $result = $this->QueryBuilder
+            ->table('users')
+            ->limit('8')
+            ->orderBy('name')
+            ->select('*');
+        $this->assertIsArray($result);
     }
 
     /*
@@ -95,7 +122,7 @@ class QueryBuilderTest extends TestCase {
     }
 
     private function multiInsert($count = 1){
-        for ($i = 0 ; $i <= $count ; $i++) {
+        for ($i = 0 ; $i < $count ; $i++) {
             $this->insertToTable();
         }
     }
